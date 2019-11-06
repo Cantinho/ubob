@@ -13,7 +13,7 @@ abstract class MviActionsProcessor<A extends MviAction, R extends MviResult> {
 
   List<Observable<R>> getActionProcessors(Observable<A> shared);
 
-  Observable<R> connect(final Observable<A> shared, final StreamTransformer<A, R> streamTransformer) {
+  Observable<R> connect(final Observable<A> shared, final SwitchMapStreamTransformer<A, R> streamTransformer) {
     return shared.transform(streamTransformer);
   }
 
