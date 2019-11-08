@@ -6,10 +6,6 @@ import 'package:ubob/src/mvi_result.dart';
 
 abstract class MviActionsProcessor<A extends MviAction, R extends MviResult> {
 
-  Observable<R> apply(Observable<A> actions) {
-    final connectable = actions.publish();
-    return Observable.merge(getActionProcessors(connectable));
-  }
 
   List<Observable<R>> getActionProcessors(Observable<A> shared);
 
@@ -18,3 +14,4 @@ abstract class MviActionsProcessor<A extends MviAction, R extends MviResult> {
   }
 
 }
+
