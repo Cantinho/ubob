@@ -1,19 +1,20 @@
 import 'package:rxdart/rxdart.dart';
 import 'package:ubob/example/components/home/mvi/home_action.dart';
 import 'package:ubob/example/components/home/mvi/home_result.dart';
-import 'package:ubob/src/mvi_action_processor.dart';
+import 'package:ubob/src/mvi_actions_processor.dart';
 
 class HomeActionProcessor extends MviActionsProcessor<HomeAction, HomeResult> {
 
-  @override
-  List<Observable<HomeResult>> getActionProcessors(Observable<HomeAction> shared) {
-    final list = [
-      connect(shared, loadTasksActionProcessor),
-      connect(shared, addTaskActionProcessor),
-      connect(shared, updateTasksActionProcessor)
-    ];
-    return list;
-  }
+//  @override
+//  List<Observable<HomeResult>> getActionProcessors(Observable<HomeAction> shared) {
+//    final list = [
+//      connect(shared, loadTasksActionProcessor),
+//      connect(shared, addTaskActionProcessor),
+//      connect(shared, updateTasksActionProcessor)
+//    ];
+//    return list;
+//  }
+
 
 
   // Each processor responds with a proper Result for a particular Action.
@@ -47,5 +48,15 @@ class HomeActionProcessor extends MviActionsProcessor<HomeAction, HomeResult> {
         return Observable.just(UpdateTaskResult(updatedTask));
       }
   );
+
+  @override
+  List<Stream<HomeResult>> getActionProcessors(final Stream<HomeAction> shared) {
+    final list = [
+      connect(shared, loadTasksActionProcessor),
+      connect(shared, addTaskActionProcessor),
+      connect(shared, updateTasksActionProcessor)
+    ];
+    return list;
+  }
 
 }
