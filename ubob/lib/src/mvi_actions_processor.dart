@@ -5,7 +5,7 @@ import 'package:rxdart/transformers.dart';
 import 'package:ubob/src/mvi_action.dart';
 import 'package:ubob/src/mvi_result.dart';
 
-abstract class MviActionProcessor<A extends MviAction, R extends MviResult> implements StreamTransformer<A, R> {
+abstract class MviActionsProcessor<A extends MviAction, R extends MviResult> implements StreamTransformer<A, R> {
 
   StreamController _controller;
 
@@ -14,9 +14,9 @@ abstract class MviActionProcessor<A extends MviAction, R extends MviResult> impl
   bool cancelOnError;
 
   // Original Stream
-  Stream<A> _stream;
+  Stream<R> _stream;
 
-  MviActionProcessor({bool sync: false, this.cancelOnError}) {
+  MviActionsProcessor({bool sync: false, this.cancelOnError}) {
     _controller = new StreamController<R>(onListen: _onListen,
         onCancel: _onCancel,
         onPause: () {
@@ -28,7 +28,7 @@ abstract class MviActionProcessor<A extends MviAction, R extends MviResult> impl
         sync: sync);
   }
 
-  MviActionProcessor.broadcast({bool sync: false, bool this.cancelOnError}) {
+  MviActionsProcessor.broadcast({bool sync: false, bool this.cancelOnError}) {
     _controller = new StreamController<R>.broadcast(
         onListen: _onListen, onCancel: _onCancel, sync: sync);
   }
@@ -46,13 +46,13 @@ abstract class MviActionProcessor<A extends MviAction, R extends MviResult> impl
   }
 
   ///Transformation
-  void onData(A data) {
+  void onData(R data) {
     _controller.add(data);
   }
 
   /// Bind
-  Stream<R> bind(Stream<A> stream) {
-    this._stream = stream;
+  Stream<R> bind(Stream<A> actions) {
+    this._stream = _apply(actions);
     return _controller.stream;
   }
 
@@ -61,7 +61,6 @@ abstract class MviActionProcessor<A extends MviAction, R extends MviResult> impl
   }
 
   List<Stream<R>> getActionProcessors(Stream<A> shared);
-
 
   @override
   StreamTransformer<RS, RT> cast<RS, RT>() => StreamTransformer.castFrom(this);
